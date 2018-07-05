@@ -18,7 +18,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.io.ByteStreams;
 import com.google.googlejavaformat.FormatterDiagnostic;
-import com.google.googlejavaformat.java.JavaFormatterOptions.Style;
 import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,8 +95,7 @@ public final class Main {
       throw new UsageException();
     }
 
-    JavaFormatterOptions options =
-        JavaFormatterOptions.builder().style(parameters.aosp() ? Style.AOSP : Style.GOOGLE).build();
+    JavaFormatterOptions options = JavaFormatterOptions.builder().style(parameters.style()).build();
 
     if (parameters.stdin()) {
       return formatStdin(parameters, options);

@@ -20,6 +20,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.fail;
 
 import com.google.common.collect.Range;
+import com.google.googlejavaformat.java.JavaFormatterOptions.Style;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,7 +43,7 @@ public class CommandLineOptionsParserTest {
     CommandLineOptions options = CommandLineOptionsParser.parse(Collections.<String>emptyList());
     assertThat(options.files()).isEmpty();
     assertThat(options.stdin()).isFalse();
-    assertThat(options.aosp()).isFalse();
+    assertThat(options.style()).isSameAs(Style.GOOGLE);
     assertThat(options.help()).isFalse();
     assertThat(options.lengths()).isEmpty();
     assertThat(options.lines().asRanges()).isEmpty();
@@ -73,7 +74,14 @@ public class CommandLineOptionsParserTest {
 
   @Test
   public void aosp() {
-    assertThat(CommandLineOptionsParser.parse(Arrays.asList("-aosp")).aosp()).isTrue();
+    assertThat(CommandLineOptionsParser.parse(Arrays.asList("-aosp")).style())
+        .isSameAs(JavaFormatterOptions.Style.AOSP);
+  }
+
+  @Test
+  public void style() {
+    assertThat(CommandLineOptionsParser.parse(Arrays.asList("-style", "aosp")).style())
+        .isSameAs(JavaFormatterOptions.Style.AOSP);
   }
 
   @Test

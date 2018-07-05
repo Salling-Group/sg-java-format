@@ -16,6 +16,7 @@ package com.google.googlejavaformat.java;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableRangeSet;
+import com.google.googlejavaformat.java.JavaFormatterOptions.Style;
 import java.util.Optional;
 
 /**
@@ -31,7 +32,7 @@ final class CommandLineOptions {
   private final ImmutableRangeSet<Integer> lines;
   private final ImmutableList<Integer> offsets;
   private final ImmutableList<Integer> lengths;
-  private final boolean aosp;
+  private final JavaFormatterOptions.Style style;
   private final boolean version;
   private final boolean help;
   private final boolean stdin;
@@ -48,7 +49,7 @@ final class CommandLineOptions {
       ImmutableRangeSet<Integer> lines,
       ImmutableList<Integer> offsets,
       ImmutableList<Integer> lengths,
-      boolean aosp,
+      JavaFormatterOptions.Style style,
       boolean version,
       boolean help,
       boolean stdin,
@@ -63,7 +64,7 @@ final class CommandLineOptions {
     this.lines = lines;
     this.offsets = offsets;
     this.lengths = lengths;
-    this.aosp = aosp;
+    this.style = style;
     this.version = version;
     this.help = help;
     this.stdin = stdin;
@@ -100,9 +101,9 @@ final class CommandLineOptions {
     return lengths;
   }
 
-  /** Use AOSP style instead of Google Style (4-space indentation). */
-  boolean aosp() {
-    return aosp;
+  /** The specified code style, defaulting to Google's. */
+  JavaFormatterOptions.Style style() {
+    return style;
   }
 
   /** Print the version. */
@@ -168,7 +169,7 @@ final class CommandLineOptions {
     private final ImmutableList.Builder<Integer> offsets = ImmutableList.builder();
     private final ImmutableList.Builder<Integer> lengths = ImmutableList.builder();
     private boolean inPlace = false;
-    private boolean aosp = false;
+    private JavaFormatterOptions.Style style = JavaFormatterOptions.Style.GOOGLE;
     private boolean version = false;
     private boolean help = false;
     private boolean stdin = false;
@@ -202,8 +203,8 @@ final class CommandLineOptions {
       return this;
     }
 
-    Builder aosp(boolean aosp) {
-      this.aosp = aosp;
+    Builder style(Style style) {
+      this.style = style;
       return this;
     }
 
@@ -259,7 +260,7 @@ final class CommandLineOptions {
           lines.build(),
           offsets.build(),
           lengths.build(),
-          aosp,
+          style,
           version,
           help,
           stdin,
