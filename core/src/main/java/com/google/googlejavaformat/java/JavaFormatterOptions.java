@@ -35,19 +35,26 @@ public class JavaFormatterOptions implements JavadocOptions {
   public enum Style {
 
     /** The default Google Java Style configuration. */
-    GOOGLE(1),
+    GOOGLE(1, DEFAULT_MAX_LINE_LENGTH),
 
     /** The AOSP-compliant configuration. */
-    AOSP(2);
+    AOSP(2, DEFAULT_MAX_LINE_LENGTH);
 
     private final int indentationMultiplier;
 
-    Style(int indentationMultiplier) {
+    private final int maxLineLength;
+
+    Style(int indentationMultiplier, final int maxLineLength) {
       this.indentationMultiplier = indentationMultiplier;
+      this.maxLineLength = maxLineLength;
     }
 
     int indentationMultiplier() {
       return indentationMultiplier;
+    }
+
+    int maxLineLength() {
+      return maxLineLength;
     }
   }
 
@@ -60,7 +67,7 @@ public class JavaFormatterOptions implements JavadocOptions {
   /** Returns the maximum formatted width */
   @Override
   public int maxLineLength() {
-    return DEFAULT_MAX_LINE_LENGTH;
+    return style.maxLineLength();
   }
 
   /** Returns the multiplier for the unit of indent */
