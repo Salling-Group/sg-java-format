@@ -30,17 +30,21 @@ import com.google.errorprone.annotations.Immutable;
 @Immutable
 @AutoValue
 public abstract class JavaFormatterOptions {
+    static final int DEFAULT_MAX_LINE_LENGTH = 100;
 
   public enum Style {
     /** The default Google Java Style configuration. */
-    GOOGLE(1),
+    GOOGLE(1, DEFAULT_MAX_LINE_LENGTH),
 
     /** The AOSP-compliant configuration. */
-    AOSP(2);
+    AOSP(2, DEFAULT_MAX_LINE_LENGTH),
+
+    /** The Salling Group configuration. */
+    SALLING_GROUP(2, 80);
 
     private final int indentationMultiplier;
 
-    Style(int indentationMultiplier) {
+    Style(int indentationMultiplier, final int defaultMaxLineLength) {
       this.indentationMultiplier = indentationMultiplier;
     }
 

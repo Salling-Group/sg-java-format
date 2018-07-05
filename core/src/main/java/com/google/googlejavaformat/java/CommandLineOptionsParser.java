@@ -195,6 +195,8 @@ final class CommandLineOptionsParser {
         return JavaFormatterOptions.Style.AOSP;
       case "google":
         return JavaFormatterOptions.Style.GOOGLE;
+      case "salling-group":
+        return JavaFormatterOptions.Style.SALLING_GROUP;
       default:
         throw new IllegalArgumentException(
             String.format("invalid style value for %s: %s", flag, value));

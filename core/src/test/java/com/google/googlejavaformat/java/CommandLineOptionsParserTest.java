@@ -84,6 +84,8 @@ public class CommandLineOptionsParserTest {
   public void style() {
     assertThat(CommandLineOptionsParser.parse(Arrays.asList("-style", "aosp")).style())
         .isSameAs(JavaFormatterOptions.Style.AOSP);
+    assertThat(CommandLineOptionsParser.parse(Arrays.asList("-style", "salling-group")).style())
+        .isSameAs(JavaFormatterOptions.Style.SALLING_GROUP);
   }
 
   @Test
