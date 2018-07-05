@@ -20,6 +20,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.Range;
+import com.google.googlejavaformat.java.JavaFormatterOptions.Style;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -84,7 +85,12 @@ final class CommandLineOptionsParser {
         case "--aosp":
         case "-aosp":
         case "-a":
-          optionsBuilder.aosp(true);
+          optionsBuilder.style(Style.AOSP);
+          break;
+        case "--style":
+        case "-style":
+        case "-s":
+          optionsBuilder.style(parseStyle(it, flag, value));
           break;
         case "--version":
         case "-version":
@@ -179,6 +185,19 @@ final class CommandLineOptionsParser {
         return Range.closedOpen(line0, line1 + 1);
       default:
         throw new IllegalArgumentException(arg);
+    }
+  }
+
+  private static Style parseStyle(Iterator<String> it, String flag, String value) {
+    final String style = getValue(flag, it, value).toLowerCase();
+    switch (style) {
+      case "aosp":
+        return JavaFormatterOptions.Style.AOSP;
+      case "google":
+        return JavaFormatterOptions.Style.GOOGLE;
+      default:
+        throw new IllegalArgumentException(
+            String.format("invalid style value for %s: %s", flag, value));
     }
   }
 
