@@ -38,7 +38,10 @@ public class JavaFormatterOptions implements JavadocOptions {
     GOOGLE(1, DEFAULT_MAX_LINE_LENGTH),
 
     /** The AOSP-compliant configuration. */
-    AOSP(2, DEFAULT_MAX_LINE_LENGTH);
+    AOSP(2, DEFAULT_MAX_LINE_LENGTH),
+
+    /** The Salling Group configuration. */
+    SALLING_GROUP(2, 80);
 
     private final int indentationMultiplier;
 

@@ -42,7 +42,7 @@ final class UsageException extends Exception {
     "  --aosp, -aosp, -a",
     "    Use AOSP style instead of Google Style (4-space indentation).",
     "  --style, -style, -s",
-    "    Use the named style; one of: aosp, google.",
+    "    Use the named style; one of: aosp, google, salling-group.",
     "  --fix-imports-only",
     "    Fix import order and remove any unused imports, but do no other formatting.",
     "  --skip-sorting-imports",
