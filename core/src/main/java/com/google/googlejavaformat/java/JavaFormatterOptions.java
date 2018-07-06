@@ -35,21 +35,24 @@ public class JavaFormatterOptions implements JavadocOptions {
   public enum Style {
 
     /** The default Google Java Style configuration. */
-    GOOGLE(1, DEFAULT_MAX_LINE_LENGTH),
+    GOOGLE(1, DEFAULT_MAX_LINE_LENGTH, false),
 
     /** The AOSP-compliant configuration. */
-    AOSP(2, DEFAULT_MAX_LINE_LENGTH),
+    AOSP(2, DEFAULT_MAX_LINE_LENGTH, false),
 
     /** The Salling Group configuration. */
-    SALLING_GROUP(2, 80);
+    SALLING_GROUP(2, 80, true);
 
     private final int indentationMultiplier;
 
     private final int maxLineLength;
 
-    Style(int indentationMultiplier, final int maxLineLength) {
+    private final boolean alwaysStackFieldAnnotations;
+
+    Style(int indentationMultiplier, final int maxLineLength, boolean alwaysStackFieldAnnotations) {
       this.indentationMultiplier = indentationMultiplier;
       this.maxLineLength = maxLineLength;
+      this.alwaysStackFieldAnnotations = alwaysStackFieldAnnotations;
     }
 
     int indentationMultiplier() {
@@ -58,6 +61,10 @@ public class JavaFormatterOptions implements JavadocOptions {
 
     int maxLineLength() {
       return maxLineLength;
+    }
+
+    boolean alwaysStackFieldAnnotations() {
+      return alwaysStackFieldAnnotations;
     }
   }
 
@@ -76,6 +83,14 @@ public class JavaFormatterOptions implements JavadocOptions {
   /** Returns the multiplier for the unit of indent */
   public int indentationMultiplier() {
     return style.indentationMultiplier();
+  }
+
+  /**
+   * Returns true if field annotations should be unconditionally stacked. By default, annotation
+   * direction is contextual.
+   */
+  public boolean alwaysStackFieldAnnotations() {
+    return style.alwaysStackFieldAnnotations();
   }
 
   /** Returns the default formatting options. */
