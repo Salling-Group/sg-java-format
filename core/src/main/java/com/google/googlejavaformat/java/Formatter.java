@@ -86,8 +86,6 @@ import javax.tools.StandardLocation;
 @Immutable
 public final class Formatter {
 
-  public static final int MAX_LINE_LENGTH = 100;
-
   static final Range<Integer> EMPTY_RANGE = Range.closedOpen(-1, -1);
 
   private final JavaFormatterOptions options;
@@ -150,6 +148,7 @@ public final class Formatter {
     }
     OpsBuilder builder = new OpsBuilder(javaInput, javaOutput);
     // Output the compilation unit.
+    new JavaInputAstVisitor(builder, options).scan(unit, null);
     JavaInputAstVisitor visitor;
     if (Runtime.version().feature() >= 21) {
       visitor =

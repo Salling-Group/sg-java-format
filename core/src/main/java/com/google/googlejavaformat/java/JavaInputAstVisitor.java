@@ -296,6 +296,7 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
     return result.build();
   }
 
+  private final JavaFormatterOptions options;
   protected final OpsBuilder builder;
 
   protected static final Indent.Const ZERO = Indent.Const.ZERO;
@@ -333,8 +334,10 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
    *
    * @param builder the {@link OpsBuilder}
    */
-  public JavaInputAstVisitor(OpsBuilder builder, int indentMultiplier) {
-    this.builder = builder;
+  public JavaInputAstVisitor(OpsBuilder builder, JavaFormatterOptions options) {
+      this.builder = builder;
+    this.options = options;
+    int indentMultiplier = options.indentationMultiplier();
     this.indentMultiplier = indentMultiplier;
     minusTwo = Indent.Const.make(-2, indentMultiplier);
     minusFour = Indent.Const.make(-4, indentMultiplier);
