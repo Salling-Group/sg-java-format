@@ -46,8 +46,9 @@ public final class Main {
   private static final int MAX_THREADS = 20;
   private static final String STDIN_FILENAME = "<stdin>";
 
-  static String versionString() {
-    return "google-java-format: Version " + GoogleJavaFormatVersion.version();
+  static final String versionString() {
+    return "sg-java-format: Version " + GoogleJavaFormatVersion.version()
+        + ", forked from\ngoogle-java-format: Version 1.6";
   }
 
   private final PrintWriter outWriter;
