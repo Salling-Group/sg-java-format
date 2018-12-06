@@ -1,0 +1,96 @@
+= sg-java-format
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+ifndef::env-github[]
+:icons: font
+endif::[]
+:sectnums:
+:toc:
+:toclevels: 3
+:toc-placement!:
+:xrefstyle: full
+
+:uri-formatter-releases: https://github.com/Salling-Group/sg-java-format/releases
+:uri-google-formatter: https://github.com/google/google-java-format
+
+`sg-java-format` reformats Java source code to comply with the named style. We
+forked {uri-google-formatter}[`google-java-format`] 1.6 and modified it to
+support custom styles to enforce the <<styleguide.adoc#,Salling Group Java
+style>>.
+
+toc::[]
+
+To simplify integrating upstream changes, customizations in
+`sg-java-format` are kept to a minimum. A clear example of this is that
+`sg-java-format` itself is formatted using the _Google_ style.
+
+For more information about `google-java-format`, see link:google-README.md[the
+original project README].
+
+== Using the formatter
+
+{uri-formatter-releases}[Download the formatter] and run it with:
+
+[source,sh]
+----
+java -jar /path/to/sg-java-format-1-all-deps.jar [options] [files...]
+----
+
+While you don't have to do anything else to _use_ `sg-java-format`, to actually
+_take advantage_ of it you have to pass the `--style` option with one of its
+supported values, e.g. `--style=salling-group`.
+
+NOTE: `sg-java-format` aims to be a drop-in replacement for the version of
+`google-java-format` it was forked from.
+
+CAUTION: The only supported use of `sg-java-format` is as a self-contained JAR
+file invoked headlessly. `google-java-format` offers additional integrations;
+these are not supported.
+
+=== In CI
+
+In CI, use `sg-java-format` as above but include these two options:
+
+`--set-exit-if-changed`:: Exit with non-zero status code if any of the named
+files would be reformatted.
+
+`--dry-run`:: Print the paths to files that would be reformatted but don't
+reformat them. Optional, but helpful for troubleshooting.
+
+[CAUTION]
+====
+`sg-java-format` cannot recurse through subtrees. For small sets of files you
+can leverage `shopt -s globstar` to name all Java files with `\**/*.java`. With
+very large sets of files this will exceed the command line limit and you will
+need to process files in batches. When processing individual batches you have
+to make a decision about how the options above should combine to determine
+failure in your execution environment, in particular whether it should fail
+immediately or only after processing all files.
+====
+
+== Motivation
+
+Reasons for establishing a style guide and enforcing it with tooling are well
+understood and documented throughout the Internet and will not be reproduced
+here.
+
+`sg-java-format` is based on `google-java-format` because that is a very well
+made application that solves the automatic formatting problem in a solid
+manner. `google-java-format` is non-configurable by design, which is highly
+advantageous in reducing human errors and misunderstandings and minimizing
+application complexity. These are desirable qualities for `sg-java-format`.
+Unfortunately Google's own Java style is radically different from most other
+style variants in a few key ways that make it difficult to adopt. These
+qualities are not desirable for `sg-java-format`, which is why we forked the
+project. There are many other tools that purport to solve this problem, most of
+them with built-in configurability, but they tend to disappoint in various
+other ways like being egregiously non-idempotent or taking excessively long
+time to run.
+
+It is not `sg-java-format`{empty}'s goal to be "`a configurable
+`google-java-format`{empty}`".

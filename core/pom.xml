@@ -25,7 +25,9 @@
     <version>1.6</version>
   </parent>
 
-  <artifactId>google-java-format</artifactId>
+  <groupId>com.sallinggroup.javaformat</groupId>
+  <artifactId>sg-java-format</artifactId>
+  <version>1-SNAPSHOT</version>
 
   <name>Google Java Format</name>
 
