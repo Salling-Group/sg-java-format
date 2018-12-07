@@ -29,7 +29,7 @@
   <artifactId>sg-java-format</artifactId>
   <version>1-SNAPSHOT</version>
 
-  <name>Google Java Format</name>
+  <name>SG Java Format</name>
 
   <description>
     A Java source code formatter that follows Google Java Style.
