@@ -46,8 +46,10 @@ public final class Main {
   private static final String STDIN_FILENAME = "<stdin>";
 
   static final String versionString() {
-    return "sg-java-format: Version " + GoogleJavaFormatVersion.version()
-        + ", forked from\ngoogle-java-format: Version 1.6";
+    return "sg-java-format: Version "
+        + GoogleJavaFormatVersion.version()
+        + ", forked from\ngoogle-java-format: Version "
+        + GoogleJavaFormatVersion.googleVersion();
   }
 
   private final PrintWriter outWriter;

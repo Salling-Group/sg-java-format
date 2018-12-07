@@ -191,6 +191,10 @@
               <token>%VERSION%</token>
               <value>${project.version}</value>
             </replacement>
+            <replacement>
+              <token>%GOOGLE_VERSION%</token>
+              <value>${parent.version}</value>
+            </replacement>
           </replacements>
         </configuration>
       </plugin>
