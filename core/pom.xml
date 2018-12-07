@@ -27,7 +27,7 @@
 
   <groupId>com.sallinggroup.javaformat</groupId>
   <artifactId>sg-java-format</artifactId>
-  <version>1-SNAPSHOT</version>
+  <version>1</version>
 
   <name>SG Java Format</name>
 
