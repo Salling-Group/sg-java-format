@@ -144,3 +144,10 @@ many there are:
 @Annotation
 private final Foo foo;
 ----
+
+=== Naming
+
+==== Package names
+
+Package names are conventionally singular. This looks better in import
+statements.
