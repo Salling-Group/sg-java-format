@@ -20,6 +20,7 @@ endif::[]
 :uri-google-java: https://google.github.io/styleguide/javaguide.html
 :uri-jdk-choices: https://blog.joda.org/2018/09/time-to-look-beyond-oracles-jdk.html
 :uri-latest-jdk: https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=hotspot
+:uri-oracle-javadoc-guide: https://www.oracle.com/technetwork/java/javase/documentation/index-137868.html
 :uri-previous-jdk: https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot
 
 This is Salling Group's official Java style guide.
@@ -151,3 +152,10 @@ private final Foo foo;
 
 Package names are conventionally singular. This looks better in import
 statements.
+
+=== Javadoc
+
+Study Oracle's official {uri-oracle-javadoc-guide}[How to Write Doc Comments
+for the Javadoc Tool] guide. It's old so it sports some dated advice, and
+written for a high-profile library so it has very high requirements, but it
+effectively established fairly good conventions.
