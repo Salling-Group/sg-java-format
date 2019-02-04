@@ -64,6 +64,26 @@ This section lists rules that _differ_ from, or do not exist in, the Google
 Java style. Refer to _<<_settling_disputes,Section 1.1, "`Settling
 disputes`">>_ for precedence rules.
 
+=== Source file structure
+
+==== No copyright header
+
+Internal code should not have copyright headers. Copyright is implicitly
+all-rights-reserved. These headers are purely noise and maintaining them
+busywork.
+
+Open source code _may_ have copyright headers but we strongly advise leaving
+them out. Instead, the (mandatory) project level license implicitly applies to
+all source files not explicitly exempted.
+
+[NOTE]
+====
+Historically, a major motivating factor for copyright headers is that blindly
+copying individual source files will automatically preserve the original
+copyright. In reality, vanishingly little can be done to prevent or correct
+such misbehavior.
+====
+
 === Formatting
 
 ==== Block indentation: +4 spaces
