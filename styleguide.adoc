@@ -20,6 +20,7 @@ endif::[]
 :uri-google-java: https://google.github.io/styleguide/javaguide.html
 :uri-jdk-choices: https://blog.joda.org/2018/09/time-to-look-beyond-oracles-jdk.html
 :uri-latest-jdk: https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=hotspot
+:uri-oracle-javadoc-guide: https://www.oracle.com/technetwork/java/javase/documentation/index-137868.html
 :uri-previous-jdk: https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot
 
 This is Salling Group's official Java style guide.
@@ -63,6 +64,26 @@ deemed too complex.
 This section lists rules that _differ_ from, or do not exist in, the Google
 Java style. Refer to _<<_settling_disputes,Section 1.1, "`Settling
 disputes`">>_ for precedence rules.
+
+=== Source file structure
+
+==== No copyright header
+
+Internal code should not have copyright headers. Copyright is implicitly
+all-rights-reserved. These headers are purely noise and maintaining them
+busywork.
+
+Open source code _may_ have copyright headers but we strongly advise leaving
+them out. Instead, the (mandatory) project level license implicitly applies to
+all source files not explicitly exempted.
+
+[NOTE]
+====
+Historically, a major motivating factor for copyright headers is that blindly
+copying individual source files will automatically preserve the original
+copyright. In reality, vanishingly little can be done to prevent or correct
+such misbehavior.
+====
 
 === Formatting
 
@@ -124,3 +145,17 @@ many there are:
 @Annotation
 private final Foo foo;
 ----
+
+=== Naming
+
+==== Package names
+
+Package names are conventionally singular. This looks better in import
+statements.
+
+=== Javadoc
+
+Study Oracle's official {uri-oracle-javadoc-guide}[How to Write Doc Comments
+for the Javadoc Tool] guide. It's old so it sports some dated advice, and
+written for a high-profile library so it has very high requirements, but it
+effectively established fairly good conventions.
