@@ -34,7 +34,13 @@ original project README].
 
 == Using the formatter
 
-{uri-formatter-releases}[Download the formatter] and run it with:
+The easiest way to use the formatter is to commit the link:scripts/javafmtw[]
+wrapper and its configuration--generated on its first execution--to your
+repository, at a location of your preference, and execute that. In that
+instance you will likely want to ignore the Jar file.
+
+Alternatively you can {uri-formatter-releases}[download the formatter] and run
+it with:
 
 [source,sh]
 ----
