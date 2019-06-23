@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+#
+# Copyright 2019 Salling Group
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# As a special exception, this file may be included in any work
+# and distributed under terms of your choice.
+
+set -o errexit
+
+print_usage_and_exit()
+{
+    exec cat <<EOF
+Usage: ./javafmtw [<file> | <commit> | --help]
+
+  <file>
+        recursively format every Java file at this location.
+  <commit>
+        format every Java file modified or added relative to <commit> as well
+        as every untracked Java file.
+  --help
+        display this help and exit.
+
+If neither <file> nor <commit> is given, behaves as if <file> is the repository
+root directory.
+EOF
+}
+
+fatal()
+{
+    printf >&2 'fatal: %s\n' "$*"
+    exit 1
+}
+
+assert_cfg_or_init()
+{
+    local cfg=$1
+
+    if ! [[ -f $cfg ]]
+    then
+        printf 'version=1\n' >> "$cfg"
+        # Reduces startup time by 1s on google-java-format source.
+        # https://stackoverflow.com/a/46516509/482758
+        printf 'jvm_options="-XX:TieredStopAtLevel=1"\n' >> "$cfg"
+        fatal "no $cfg, created default. Please validate contents."
+    fi
+}
+
+download_url_to()
+{
+    local dest=$1
+    local url=$2
+
+    if hash curl 2>/dev/null
+    then
+        curl --fail --silent --location --output "$dest" "$url" ||
+            fatal "curl" "$url"
+    else
+        wget --quiet --output-document="$dest" "$url" ||
+            fatal "wget" "$url"
+    fi
+}
+
+list_modified_files()
+{
+    local rev=$1
+
+    git rev-parse --quiet --verify "$rev" > /dev/null ||
+        fatal "not a file or revision:" "$rev"
+
+    # List tracked files...
+    git diff \
+        --name-only \
+        --no-renames \
+        --diff-filter=MA \
+        "$rev" -- ':(top)*.java' >> "$file_list"
+
+    # ... and untracked files. Git cannot combine these two operations.
+    git ls-files \
+        --full-name \
+        --exclude-standard \
+        --others  -- ':(top)*.java' >> "$file_list"
+}
+
+main()
+{
+    cd "$(git rev-parse --show-toplevel)"
+
+    local optional_arg=$1
+
+    [[ $optional_arg != --help ]] || print_usage_and_exit
+
+    local cfg="$script_path/.javafmtw"
+
+    assert_cfg_or_init "$cfg"
+
+    local version jvm_options
+    # shellcheck source=/dev/null
+    . "$cfg"
+    version="${version:?}"
+    jvm_options="${jvm_options:-}"
+
+    local name="sg-java-format"
+    local release_name="$name-$version"
+    local jarfile="$release_name-all-deps.jar"
+    local url="https://github.com/Salling-Group/$name/releases/download/$release_name/$jarfile"
+    jarfile="$script_path/$jarfile"
+
+    [[ -f $jarfile ]] || download_url_to "$jarfile" "$url"
+
+    # $ ./javafmtw [src/ | master]
+    # $ ./bin/javafmtw [src/ | master]
+    # bin $ ./javafmtw [../src/ | master]
+    #
+    # <no arg=root>, <file>, or <commit> ?
+    local maybe_path=.
+    [[ -z $optional_arg ]] || maybe_path="$user_wd/$optional_arg"
+    if [[ -r $maybe_path ]]
+    then
+        find "$maybe_path" -name '*.java' >> "$file_list"
+    else
+        list_modified_files "$optional_arg"
+    fi
+
+    # shellcheck disable=SC2086
+    # Splitting $jvm_options is the point.
+    java $jvm_options \
+        -jar "$jarfile" \
+        --style=salling-group \
+        --replace \
+        @$file_list
+}
+
+user_wd="$(pwd)"
+script_path="$(realpath "${BASH_SOURCE%/*}")"
+
+file_list=$(mktemp)
+trap 'rm -f "$file_list"' EXIT
+
+main "$@"
