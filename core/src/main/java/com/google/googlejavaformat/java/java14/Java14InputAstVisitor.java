@@ -61,7 +61,11 @@ public class Java14InputAstVisitor extends JavaInputAstVisitor {
   @Override
   public Void visitYield(YieldTree node, Void aVoid) {
     sync(node);
-    return super.visitYield(node, aVoid);
+    token("yield");
+    builder.space();
+    scan(node.getValue(), null);
+    token(";");
+    return null;
   }
 
   @Override
@@ -224,7 +228,7 @@ public class Java14InputAstVisitor extends JavaInputAstVisitor {
         token(">");
         builder.space();
         scan(node.getBody(), null);
-        token(";");
+        builder.guessToken(";");
         break;
       default:
         throw new AssertionError(node.getCaseKind());
