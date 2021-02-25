@@ -13,7 +13,7 @@
 and run it with:
 
 ```
-java -jar /path/to/google-java-format-1.5-all-deps.jar <options> [files...]
+java -jar /path/to/google-java-format-1.6-all-deps.jar <options> [files...]
 ```
 
 The formatter can act on whole files, on limited lines (`--lines`), on specific
@@ -29,16 +29,17 @@ a single format.*
 
 ### IntelliJ
 
-A [google-java-format IntelliJ
-plugin](https://plugins.jetbrains.com/plugin/8527) is available from the plugin
-repository.
+A
+[google-java-format IntelliJ plugin](https://plugins.jetbrains.com/plugin/8527)
+is available from the plugin repository.
 
-The plugin will be enabled by default. To disable it in the current project, go
+The plugin will be disabled by default. To enable it in the current project, go
 to `File→Settings...→google-java-format Settings` (or `IntelliJ
 IDEA→Preferences...→Other Settings→google-java-format Settings` on macOS) and
-uncheck the `Enable google-java-format` checkbox.
+check the `Enable google-java-format` checkbox. (A notification will be
+presented when you first open a project offering to do this for you.)
 
-To disable it by default in new projects, use `File→Other Settings→Default
+To enable it by default in new projects, use `File→Other Settings→Default
 Settings...`.
 
 When enabled, it will replace the normal `Reformat Code` action, which can be
@@ -46,16 +47,16 @@ triggered from the `Code` menu or with the Ctrl-Alt-L (by default) keyboard
 shortcut.
 
 The import ordering is not handled by this plugin, unfortunately. To fix the
-import order, download the [IntelliJ Java Google Style
-file](https://github.com/google/styleguide/blob/gh-pages/intellij-java-google-style.xml)
+import order, download the
+[IntelliJ Java Google Style file](https://raw.githubusercontent.com/google/styleguide/gh-pages/intellij-java-google-style.xml)
 and import it into File→Settings→Editor→Code Style.
 
 ### Eclipse
 
-A [google-java-format Eclipse
-plugin](https://github.com/google/google-java-format/releases/download/google-java-format-1.5/google-java-format-eclipse-plugin_1.5.0.jar)
-can be downloaded from the releases page. Drop it into the Eclipse [drop-ins
-folder](http://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fmisc%2Fp2_dropins_format.html)
+A
+[google-java-format Eclipse plugin](https://github.com/google/google-java-format/releases/download/google-java-format-1.6/google-java-format-eclipse-plugin_1.6.0.jar)
+can be downloaded from the releases page. Drop it into the Eclipse
+[drop-ins folder](http://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fmisc%2Fp2_dropins_format.html)
 to activate the plugin.
 
 The plugin adds a `google-java-format` formatter implementation that can be
@@ -89,7 +90,7 @@ configuration.
 <dependency>
   <groupId>com.google.googlejavaformat</groupId>
   <artifactId>google-java-format</artifactId>
-  <version>1.5</version>
+  <version>1.6</version>
 </dependency>
 ```
 
@@ -97,7 +98,7 @@ configuration.
 
 ```groovy
 dependencies {
-  compile 'com.google.googlejavaformat:google-java-format:1.5'
+  compile 'com.google.googlejavaformat:google-java-format:1.6'
 }
 ```
 
