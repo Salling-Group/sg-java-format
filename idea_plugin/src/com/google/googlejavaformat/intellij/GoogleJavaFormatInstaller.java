@@ -16,27 +16,25 @@
 
 package com.google.googlejavaformat.intellij;
 
-import com.intellij.openapi.components.ProjectComponent;
+import static com.google.common.base.Preconditions.checkState;
+
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManagerCore;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.psi.codeStyle.CodeStyleManager;
-import org.picocontainer.MutablePicoContainer;
+import com.intellij.serviceContainer.ComponentManagerImpl;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A component that replaces the default IntelliJ {@link CodeStyleManager} with one that formats via
  * google-java-format.
  */
-final class GoogleJavaFormatInstaller implements ProjectComponent {
-
-  private static final String CODE_STYLE_MANAGER_KEY = CodeStyleManager.class.getName();
-
-  private final Project project;
-
-  private GoogleJavaFormatInstaller(Project project) {
-    this.project = project;
-  }
+final class GoogleJavaFormatInstaller implements ProjectManagerListener {
 
   @Override
-  public void projectOpened() {
+  public void projectOpened(@NotNull Project project) {
     installFormatter(project);
   }
 
@@ -51,10 +49,9 @@ final class GoogleJavaFormatInstaller implements ProjectComponent {
   }
 
   private static void setManager(Project project, CodeStyleManager newManager) {
-    if (newManager != null) {
-      MutablePicoContainer container = (MutablePicoContainer) project.getPicoContainer();
-      container.unregisterComponent(CODE_STYLE_MANAGER_KEY);
-      container.registerComponentInstance(CODE_STYLE_MANAGER_KEY, newManager);
-    }
+    ComponentManagerImpl platformComponentManager = (ComponentManagerImpl) project;
+    IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(PluginId.getId("google-java-format"));
+    checkState(plugin != null, "Couldn't locate our own PluginDescriptor.");
+    platformComponentManager.registerServiceInstance(CodeStyleManager.class, newManager, plugin);
   }
 }

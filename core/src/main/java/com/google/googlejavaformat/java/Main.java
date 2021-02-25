@@ -97,7 +97,11 @@ public final class Main {
       throw new UsageException();
     }
 
-    JavaFormatterOptions options = JavaFormatterOptions.builder().style(parameters.style()).build();
+    JavaFormatterOptions options =
+        JavaFormatterOptions.builder()
+            .style(parameters.style())
+            .formatJavadoc(parameters.formatJavadoc())
+            .build();
 
     if (parameters.stdin()) {
       return formatStdin(parameters, options);

@@ -12,29 +12,27 @@
 
   <change-notes><![CDATA[
     <dl>
-      <dt>1.6.2</dt>
-      <dd>Add support for 2018.3 IDEs.</dd>
-      <dt>1.6.1</dt>
-      <dd>Reverted the default to disabled. A notification will be presented the first time you
-        open a project asking if you want to enable google-java-format for that project.</dd>
-      <dt>1.6.0</dt>
-      <dd>Upgraded to google-java-format 1.6. Enabled the plugin by default.</dd>
+      <dt>1.7.0.5</dt>
+      <dd>Added a version for 2020.1+ IDEs.</dd>
+      <dt>1.7.0.4</dt>
+      <dd>Marked the plugin as being incompatible with 2020.1+ IDEs.</dd>
+      <dt>1.7.0.3</dt>
+      <dd>Fixed the plugin on 2019.3 IDEs.</dd>
+      <dt>1.7.0.2</dt>
+      <dd>Added support for all IDEs after 2017.3.</dd>
+      <dt>1.7.0.1</dt>
+      <dd>Added support for 2019.1 IDEs.</dd>
+      <dt>1.7.0.0</dt>
+      <dd>Upgraded to google-java-format 1.7.</dd>
     </dl>
   ]]></change-notes>
 
-  <project-components>
-    <component>
-      <implementation-class>
-        com.google.googlejavaformat.intellij.GoogleJavaFormatInstaller
-      </implementation-class>
-      <loadForDefaultProject/>
-    </component>
-    <component>
-      <implementation-class>
-        com.google.googlejavaformat.intellij.InitialConfigurationComponent
-      </implementation-class>
-    </component>
-  </project-components>
+  <applicationListeners>
+    <listener class="com.google.googlejavaformat.intellij.InitialConfigurationProjectManagerListener"
+              topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    <listener class="com.google.googlejavaformat.intellij.GoogleJavaFormatInstaller"
+              topic="com.intellij.openapi.project.ProjectManagerListener"/>
+  </applicationListeners>
 
   <extensions defaultExtensionNs="com.intellij">
     <projectConfigurable instance="com.google.googlejavaformat.intellij.GoogleJavaFormatConfigurable"
