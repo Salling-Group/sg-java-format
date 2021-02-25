@@ -74,6 +74,28 @@ public final class FormatterTest {
     assertThat(out.toString()).isEqualTo(expectedOutput);
   }
 
+  /**
+   * Integration test to prove that {@link Style#SALLING_GROUP} works all the way through; not to
+   * prove its behaviour.
+   */
+  @Test
+  public void testFormatSallingGroup() throws Exception {
+    String input = "class A{}";
+    String expectedOutput = "class A {}\n";
+
+    Path tmpdir = testFolder.newFolder().toPath();
+    Path path = tmpdir.resolve("A.java");
+    Files.write(path, input.getBytes(StandardCharsets.UTF_8));
+
+    StringWriter out = new StringWriter();
+    StringWriter err = new StringWriter();
+
+    Main main = new Main(new PrintWriter(out, true), new PrintWriter(err, true), System.in);
+    String[] args = {"--style=salling-group", path.toString()};
+    assertThat(main.format(args)).isEqualTo(0);
+    assertThat(out.toString()).isEqualTo(expectedOutput);
+  }
+
   @Test
   public void testFormatNonJavaFiles() throws Exception {
     StringWriter out = new StringWriter();
