@@ -19,7 +19,7 @@ endif::[]
 :uri-google-formatter: https://github.com/google/google-java-format
 
 `sg-java-format` reformats Java source code to comply with the named style. We
-forked {uri-google-formatter}[`google-java-format`] 1.6 and modified it to
+forked {uri-google-formatter}[`google-java-format`] 1.9 and modified it to
 support custom styles to enforce the <<styleguide.adoc#,Salling Group Java
 style>>.
 
