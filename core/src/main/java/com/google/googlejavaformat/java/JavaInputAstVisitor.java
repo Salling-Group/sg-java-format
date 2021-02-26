@@ -139,7 +139,6 @@ import com.sun.tools.javac.tree.TreeScanner;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -2369,7 +2368,7 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
     builder.open(ZERO);
     boolean first = true;
     if (receiver.isPresent()) {
-      // TODO(jdd): Use builders.
+      // TODO(user): Use builders.
       declareOne(
           DeclarationKind.PARAMETER,
           Direction.HORIZONTAL,
@@ -2909,7 +2908,7 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
         if (!methodInvocation.getTypeArguments().isEmpty()) {
           builder.open(plusFour);
           addTypeArguments(methodInvocation.getTypeArguments(), ZERO);
-          // TODO(jdd): Should indent the name -4.
+          // TODO(user): Should indent the name -4.
           builder.breakOp(Doc.FillMode.UNIFIED, "", ZERO, tyargTag);
           builder.close();
         }
@@ -3273,8 +3272,7 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
     }
 
     Deque<List<? extends AnnotationTree>> dims =
-        new ArrayDeque<>(
-            typeWithDims.isPresent() ? typeWithDims.get().dims : Collections.emptyList());
+        new ArrayDeque<>(typeWithDims.isPresent() ? typeWithDims.get().dims : ImmutableList.of());
     int baseDims = 0;
 
     builder.open(
