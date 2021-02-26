@@ -15,7 +15,6 @@
 package com.google.googlejavaformat.java;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.googlejavaformat.java.javadoc.JavadocOptions;
 
 /**
  * Options for a google-java-format invocation.
@@ -28,12 +27,11 @@ import com.google.googlejavaformat.java.javadoc.JavadocOptions;
  * preferences, and in fact it would work directly against our primary goals.
  */
 @Immutable
-public class JavaFormatterOptions implements JavadocOptions {
+public class JavaFormatterOptions {
 
   static final int DEFAULT_MAX_LINE_LENGTH = 100;
 
   public enum Style {
-
     /** The default Google Java Style configuration. */
     GOOGLE(1, DEFAULT_MAX_LINE_LENGTH, false),
 
@@ -69,20 +67,30 @@ public class JavaFormatterOptions implements JavadocOptions {
   }
 
   private final Style style;
+  private final boolean formatJavadoc;
 
-  private JavaFormatterOptions(Style style) {
+  private JavaFormatterOptions(Style style, boolean formatJavadoc) {
     this.style = style;
+    this.formatJavadoc = formatJavadoc;
   }
 
   /** Returns the maximum formatted width */
-  @Override
   public int maxLineLength() {
     return style.maxLineLength();
   }
 
-  /** Returns the multiplier for the unit of indent */
+  /** Returns the multiplier for the unit of indent. */
   public int indentationMultiplier() {
     return style.indentationMultiplier();
+  }
+
+  boolean formatJavadoc() {
+    return formatJavadoc;
+  }
+
+  /** Returns the code style. */
+  public Style style() {
+    return style;
   }
 
   /**
@@ -106,6 +114,7 @@ public class JavaFormatterOptions implements JavadocOptions {
   /** A builder for {@link JavaFormatterOptions}. */
   public static class Builder {
     private Style style = Style.GOOGLE;
+    private boolean formatJavadoc = true;
 
     private Builder() {}
 
@@ -114,8 +123,13 @@ public class JavaFormatterOptions implements JavadocOptions {
       return this;
     }
 
+    Builder formatJavadoc(boolean formatJavadoc) {
+      this.formatJavadoc = formatJavadoc;
+      return this;
+    }
+
     public JavaFormatterOptions build() {
-      return new JavaFormatterOptions(style);
+      return new JavaFormatterOptions(style, formatJavadoc);
     }
   }
 }

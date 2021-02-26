@@ -43,7 +43,7 @@ public class CommandLineOptionsParserTest {
     CommandLineOptions options = CommandLineOptionsParser.parse(Collections.<String>emptyList());
     assertThat(options.files()).isEmpty();
     assertThat(options.stdin()).isFalse();
-    assertThat(options.style()).isSameAs(Style.GOOGLE);
+    assertThat(options.style()).isSameInstanceAs(Style.GOOGLE);
     assertThat(options.help()).isFalse();
     assertThat(options.lengths()).isEmpty();
     assertThat(options.lines().asRanges()).isEmpty();
@@ -54,6 +54,8 @@ public class CommandLineOptionsParserTest {
     assertThat(options.removeUnusedImports()).isTrue();
     assertThat(options.dryRun()).isFalse();
     assertThat(options.setExitIfChanged()).isFalse();
+    assertThat(options.reflowLongStrings()).isTrue();
+    assertThat(options.formatJavadoc()).isTrue();
   }
 
   @Test
@@ -75,15 +77,15 @@ public class CommandLineOptionsParserTest {
   @Test
   public void aosp() {
     assertThat(CommandLineOptionsParser.parse(Arrays.asList("-aosp")).style())
-        .isSameAs(JavaFormatterOptions.Style.AOSP);
+        .isSameInstanceAs(JavaFormatterOptions.Style.AOSP);
   }
 
   @Test
   public void style() {
     assertThat(CommandLineOptionsParser.parse(Arrays.asList("-style", "aosp")).style())
-        .isSameAs(JavaFormatterOptions.Style.AOSP);
+        .isSameInstanceAs(JavaFormatterOptions.Style.AOSP);
     assertThat(CommandLineOptionsParser.parse(Arrays.asList("-style", "salling-group")).style())
-        .isSameAs(JavaFormatterOptions.Style.SALLING_GROUP);
+        .isSameInstanceAs(JavaFormatterOptions.Style.SALLING_GROUP);
   }
 
   @Test
@@ -195,5 +197,21 @@ public class CommandLineOptionsParserTest {
         .hasValue("Foo.java");
     assertThat(CommandLineOptionsParser.parse(Arrays.asList("Foo.java")).assumeFilename())
         .isEmpty();
+  }
+
+  @Test
+  public void skipReflowLongStrings() {
+    assertThat(
+            CommandLineOptionsParser.parse(Arrays.asList("--skip-reflowing-long-strings"))
+                .reflowLongStrings())
+        .isFalse();
+  }
+
+  @Test
+  public void skipJavadocFormatting() {
+    assertThat(
+            CommandLineOptionsParser.parse(Arrays.asList("--skip-javadoc-formatting"))
+                .formatJavadoc())
+        .isFalse();
   }
 }

@@ -97,7 +97,11 @@ public final class Main {
       throw new UsageException();
     }
 
-    JavaFormatterOptions options = JavaFormatterOptions.builder().style(parameters.style()).build();
+    JavaFormatterOptions options =
+        JavaFormatterOptions.builder()
+            .style(parameters.style())
+            .formatJavadoc(parameters.formatJavadoc())
+            .build();
 
     if (parameters.stdin()) {
       return formatStdin(parameters, options);
@@ -112,6 +116,8 @@ public final class Main {
 
     Map<Path, String> inputs = new LinkedHashMap<>();
     Map<Path, Future<String>> results = new LinkedHashMap<>();
+    boolean allOk = true;
+
     for (String fileName : parameters.files()) {
       if (!fileName.endsWith(".java")) {
         errWriter.println("Skipping non-Java file: " + fileName);
@@ -121,15 +127,15 @@ public final class Main {
       String input;
       try {
         input = new String(Files.readAllBytes(path), UTF_8);
+        inputs.put(path, input);
+        results.put(
+            path, executorService.submit(new FormatFileCallable(parameters, input, options)));
       } catch (IOException e) {
         errWriter.println(fileName + ": could not read file: " + e.getMessage());
-        return 1;
+        allOk = false;
       }
-      inputs.put(path, input);
-      results.put(path, executorService.submit(new FormatFileCallable(parameters, input, options)));
     }
 
-    boolean allOk = true;
     for (Map.Entry<Path, Future<String>> result : results.entrySet()) {
       Path path = result.getKey();
       String formatted;
