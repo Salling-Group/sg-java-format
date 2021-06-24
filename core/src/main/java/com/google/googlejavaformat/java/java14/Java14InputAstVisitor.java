@@ -15,26 +15,29 @@
 package com.google.googlejavaformat.java.java14;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.MoreCollectors.toOptional;
 
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableList;
 import com.google.googlejavaformat.Op;
 import com.google.googlejavaformat.OpsBuilder;
+import com.google.googlejavaformat.OpsBuilder.BlankLineWanted;
 import com.google.googlejavaformat.java.JavaFormatterOptions;
 import com.google.googlejavaformat.java.JavaInputAstVisitor;
 import com.sun.source.tree.BindingPatternTree;
+import com.sun.source.tree.BlockTree;
 import com.sun.source.tree.CaseTree;
 import com.sun.source.tree.ClassTree;
+import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.InstanceOfTree;
+import com.sun.source.tree.ModifiersTree;
+import com.sun.source.tree.ModuleTree;
 import com.sun.source.tree.SwitchExpressionTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.tree.YieldTree;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.tree.TreeInfo;
 import java.util.List;
@@ -52,17 +55,36 @@ public class Java14InputAstVisitor extends JavaInputAstVisitor {
   }
 
   @Override
+  protected void handleModule(boolean first, CompilationUnitTree node) {
+    try {
+      ModuleTree module =
+          (ModuleTree) CompilationUnitTree.class.getMethod("getModule").invoke(node);
+      if (module != null) {
+        if (!first) {
+          builder.blankLineWanted(BlankLineWanted.YES);
+        }
+        markForPartialFormat();
+        visitModule(module, null);
+        builder.forcedBreak();
+      }
+    } catch (ReflectiveOperationException e) {
+      // Java < 17, see https://bugs.openjdk.java.net/browse/JDK-8255464
+    }
+  }
+
+  @Override
   public Void visitBindingPattern(BindingPatternTree node, Void unused) {
     sync(node);
     try {
       VariableTree variableTree =
           (VariableTree) BindingPatternTree.class.getMethod("getVariable").invoke(node);
-      visitBindingPattern(variableTree.getType(), variableTree.getName());
+      visitBindingPattern(
+          variableTree.getModifiers(), variableTree.getType(), variableTree.getName());
     } catch (ReflectiveOperationException e1) {
       try {
         Tree type = (Tree) BindingPatternTree.class.getMethod("getType").invoke(node);
-        Name name = (Name) BindingPatternTree.class.getMethod("getName").invoke(node);
-        visitBindingPattern(type, name);
+        Name name = (Name) BindingPatternTree.class.getMethod("getBinding").invoke(node);
+        visitBindingPattern(/* modifiers= */ null, type, name);
       } catch (ReflectiveOperationException e2) {
         e2.addSuppressed(e1);
         throw new LinkageError(e2.getMessage(), e2);
@@ -71,7 +93,10 @@ public class Java14InputAstVisitor extends JavaInputAstVisitor {
     return null;
   }
 
-  private void visitBindingPattern(Tree type, Name name) {
+  private void visitBindingPattern(ModifiersTree modifiers, Tree type, Name name) {
+    if (modifiers != null) {
+      builder.addAll(visitModifiers(modifiers, Direction.HORIZONTAL, Optional.empty()));
+    }
     scan(type, null);
     builder.breakOp(" ");
     visit(name);
@@ -137,10 +162,7 @@ public class Java14InputAstVisitor extends JavaInputAstVisitor {
       if (!node.getTypeParameters().isEmpty()) {
         typeParametersRest(node.getTypeParameters(), hasSuperInterfaceTypes ? plusFour : ZERO);
       }
-      ImmutableList<JCVariableDecl> parameters =
-          compactRecordConstructor(node)
-              .map(m -> ImmutableList.copyOf(m.getParameters()))
-              .orElseGet(() -> recordVariables(node));
+      ImmutableList<JCVariableDecl> parameters = recordVariables(node);
       token("(");
       if (!parameters.isEmpty()) {
         // Break before args.
@@ -179,14 +201,6 @@ public class Java14InputAstVisitor extends JavaInputAstVisitor {
     dropEmptyDeclarations();
   }
 
-  private static Optional<JCMethodDecl> compactRecordConstructor(ClassTree node) {
-    return node.getMembers().stream()
-        .filter(JCMethodDecl.class::isInstance)
-        .map(JCMethodDecl.class::cast)
-        .filter(m -> (m.mods.flags & COMPACT_RECORD_CONSTRUCTOR) == COMPACT_RECORD_CONSTRUCTOR)
-        .collect(toOptional());
-  }
-
   private static ImmutableList<JCVariableDecl> recordVariables(ClassTree node) {
     return node.getMembers().stream()
         .filter(JCVariableDecl.class::isInstance)
@@ -223,16 +237,18 @@ public class Java14InputAstVisitor extends JavaInputAstVisitor {
       token("default", plusTwo);
     } else {
       token("case", plusTwo);
+      builder.open(plusFour);
       builder.space();
       boolean first = true;
       for (ExpressionTree expression : node.getExpressions()) {
         if (!first) {
           token(",");
-          builder.space();
+          builder.breakOp(" ");
         }
         scan(expression, null);
         first = false;
       }
+      builder.close();
     }
     switch (node.getCaseKind()) {
       case STATEMENT:
@@ -246,7 +262,16 @@ public class Java14InputAstVisitor extends JavaInputAstVisitor {
         token("-");
         token(">");
         builder.space();
-        scan(node.getBody(), null);
+        if (node.getBody().getKind() == Tree.Kind.BLOCK) {
+          // Explicit call with {@link CollapseEmptyOrNot.YES} to handle empty case blocks.
+          visitBlock(
+              (BlockTree) node.getBody(),
+              CollapseEmptyOrNot.YES,
+              AllowLeadingBlankLine.NO,
+              AllowTrailingBlankLine.NO);
+        } else {
+          scan(node.getBody(), null);
+        }
         builder.guessToken(";");
         break;
       default:

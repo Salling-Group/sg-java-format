@@ -28,7 +28,7 @@
   <groupId>com.google.googlejavaformat</groupId>
   <artifactId>google-java-format-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.10-SNAPSHOT</version>
+  <version>HEAD-SNAPSHOT</version>
 
   <modules>
     <module>core</module>
@@ -98,6 +98,7 @@
     <guava.version>30.0-jre</guava.version>
     <truth.version>1.0</truth.version>
     <checker.version>3.6.1</checker.version>
+    <errorprone.version>2.7.1</errorprone.version>
   </properties>
 
   <dependencyManagement>
@@ -118,7 +119,7 @@
       <dependency>
         <groupId>com.google.errorprone</groupId>
         <artifactId>error_prone_annotations</artifactId>
-        <version>2.5.1</version>
+        <version>${errorprone.version}</version>
       </dependency>
 
       <!-- Test dependencies -->
@@ -209,7 +210,7 @@
             <path>
               <groupId>com.google.errorprone</groupId>
               <artifactId>error_prone_core</artifactId>
-              <version>2.5.1</version>
+              <version>${errorprone.version}</version>
             </path>
           </annotationProcessorPaths>
         </configuration>
@@ -259,7 +260,19 @@
         <version>2.18</version>
         <configuration>
           <!-- set heap size to work around http://github.com/travis-ci/travis-ci/issues/3396 -->
-          <argLine>-Xmx1024m --illegal-access=permit</argLine>
+          <argLine>
+            -Xmx1024m
+            --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+            --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+            --add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED
+            --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED
+            --add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+            --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
+            --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+            --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+            --add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
+            --add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED
+          </argLine>
         </configuration>
       </plugin>
     </plugins>

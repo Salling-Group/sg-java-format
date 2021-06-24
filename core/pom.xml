@@ -22,7 +22,7 @@
   <parent>
     <groupId>com.google.googlejavaformat</groupId>
     <artifactId>google-java-format-parent</artifactId>
-    <version>1.10-SNAPSHOT</version>
+  <version>HEAD-SNAPSHOT</version>
   </parent>
 
   <groupId>com.sallinggroup.javaformat</groupId>
@@ -221,11 +221,11 @@
           <replacements>
             <replacement>
               <token>%VERSION%</token>
-              <value>${project.version}</value>
+              <value>${project.parent.version}</value>
             </replacement>
             <replacement>
               <token>%GOOGLE_VERSION%</token>
-              <value>${parent.version}</value>
+              <value>${project.parent.version}</value>
             </replacement>
           </replacements>
         </configuration>
@@ -269,7 +269,7 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
+            <groupId><![CDATA[org.apache.maven.plugins]]></groupId>
             <artifactId>maven-compiler-plugin</artifactId>
             <configuration>
               <excludes>
