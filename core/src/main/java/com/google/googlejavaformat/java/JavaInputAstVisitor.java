@@ -2297,7 +2297,7 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
                 ? forceBreakList(declarationAnnotationBreak)
                 : breakList(declarationAnnotationBreak));
       }
-      formatAnnotationOrModifier(declarationModifiers.removeFirst());
+      formatAnnotationOrModifier(declarationModifiers);
       first = false;
       lastWasAnnotation = true;
     }
@@ -2320,7 +2320,7 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
       if (!first) {
         builder.addAll(breakFillList(Optional.empty()));
       }
-      formatAnnotationOrModifier(declarationModifiers.removeFirst());
+      formatAnnotationOrModifier(declarationModifiers);
       first = false;
     }
     builder.close();
@@ -2455,10 +2455,15 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
         modifiers.subList(0, idx + 1), typeAnnotations.build().reverse());
   }
 
-  private void formatAnnotationOrModifier(AnnotationOrModifier modifier) {
+  private void formatAnnotationOrModifier(Deque<AnnotationOrModifier> modifiers) {
+    AnnotationOrModifier modifier = modifiers.removeFirst();
     switch (modifier.getKind()) {
       case MODIFIER:
         token(modifier.modifier().getText());
+        if (modifier.modifier().getText().equals("non")) {
+          token(modifiers.removeFirst().modifier().getText());
+          token(modifiers.removeFirst().modifier().getText());
+        }
         break;
       case ANNOTATION:
         scan(modifier.annotation(), null);
@@ -2472,10 +2477,6 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
       return false;
     }
     return typeAnnotationSimpleNames.contains(((IdentifierTree) annotationType).getName());
-  }
-
-  boolean nextIsModifier() {
-    return isModifier(builder.peekToken().get());
   }
 
   private static boolean isModifier(String token) {
@@ -2493,7 +2494,8 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
       case "strictfp":
       case "default":
       case "sealed":
-      case "non-sealed":
+      case "non":
+      case "-":
         return true;
       default:
         return false;
@@ -2640,7 +2642,7 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
     for (ExpressionTree thrownExceptionType : thrownExceptionTypes) {
       if (!first) {
         token(",");
-        builder.breakToFill(" ");
+        builder.breakOp(" ");
       }
       scan(thrownExceptionType, null);
       first = false;

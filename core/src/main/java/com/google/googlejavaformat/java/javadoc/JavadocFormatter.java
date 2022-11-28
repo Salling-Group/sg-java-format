@@ -51,7 +51,7 @@ public final class JavadocFormatter {
       return input;
     }
     String result = render(tokens, blockIndent, options);
-    return makeSingleLineIfPossible(blockIndent, result, options);
+    return makeSingleLineIfPossible(blockIndent, result);
   }
 
   private static String render(List<Token> input, int blockIndent, JavaFormatterOptions options) {
@@ -166,16 +166,30 @@ public final class JavadocFormatter {
    * Returns the given string or a one-line version of it (e.g., "∕✱✱ Tests for foos. ✱∕") if it
    * fits on one line.
    */
-  private static String makeSingleLineIfPossible(
-      int blockIndent, String input, JavaFormatterOptions options) {
-    int oneLinerContentLength = options.maxLineLength() - "/**  */".length() - blockIndent;
+  private static String makeSingleLineIfPossible(int blockIndent, String input) {
     Matcher matcher = ONE_CONTENT_LINE_PATTERN.matcher(input);
-    if (matcher.matches() && matcher.group(1).isEmpty()) {
-      return "/** */";
-    } else if (matcher.matches() && matcher.group(1).length() <= oneLinerContentLength) {
-      return "/** " + matcher.group(1) + " */";
+    if (matcher.matches()) {
+      String line = matcher.group(1);
+      if (line.isEmpty()) {
+        return "/** */";
+      } else if (oneLineJavadoc(line, blockIndent)) {
+        return "/** " + line + " */";
+      }
     }
     return input;
+  }
+
+  private static boolean oneLineJavadoc(String line, int blockIndent) {
+    int oneLinerContentLength = MAX_LINE_LENGTH - "/**  */".length() - blockIndent;
+    if (line.length() > oneLinerContentLength) {
+      return false;
+    }
+    // If the javadoc contains only a tag, use multiple lines to encourage writing a summary
+    // fragment, unless it's /* @hide */.
+    if (line.startsWith("@") && !line.equals("@hide")) {
+      return false;
+    }
+    return true;
   }
 
   private JavadocFormatter() {}

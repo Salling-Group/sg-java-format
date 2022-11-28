@@ -78,9 +78,14 @@
       <artifactId>truth</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.google.truth.extensions</groupId>
+      <artifactId>truth-java8-extension</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.google.testing.compile</groupId>
       <artifactId>compile-testing</artifactId>
-      <version>0.15</version>
+      <version>0.19</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -121,7 +126,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>3.2.4</version>
         <executions>
           <execution>
             <id>shade-all-deps</id>
@@ -197,7 +202,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>add-source</id>
@@ -228,7 +233,7 @@
     <profile>
       <id>jdk11</id>
       <activation>
-        <jdk>(,14)</jdk>
+        <jdk>(,17)</jdk>
       </activation>
       <build>
         <plugins>
@@ -237,14 +242,54 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <configuration>
               <excludes>
-                <exclude>**/Java14InputAstVisitor.java</exclude>
+                <exclude>**/Java17InputAstVisitor.java</exclude>
               </excludes>
             </configuration>
           </plugin>
           <plugin>
             <artifactId>maven-javadoc-plugin</artifactId>
             <configuration>
-              <excludePackageNames>com.google.googlejavaformat.java.java14</excludePackageNames>
+              <excludePackageNames>com.google.googlejavaformat.java.java17</excludePackageNames>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>native</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.graalvm.buildtools</groupId>
+            <artifactId>native-maven-plugin</artifactId>
+            <version>0.9.13</version>
+            <extensions>true</extensions>
+            <executions>
+              <execution>
+                <id>build-native</id>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+                <phase>package</phase>
+              </execution>
+              <execution>
+                <id>test-native</id>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <phase>test</phase>
+              </execution>
+            </executions>
+            <configuration>
+              <imageName>google-java-format</imageName>
+              <classpath>
+                <param>${project.build.directory}/${project.artifactId}-${project.version}-all-deps.jar</param>
+              </classpath>
+              <buildArgs>
+                <buildArg>-H:IncludeResourceBundles=com.sun.tools.javac.resources.compiler</buildArg>
+                <buildArg>--no-fallback</buildArg>
+                <buildArg>--initialize-at-build-time=com.sun.tools.javac.file.Locations</buildArg>
+              </buildArgs>
             </configuration>
           </plugin>
         </plugins>
