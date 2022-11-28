@@ -32,14 +32,6 @@ jobs:
         java: [ 19, 17, 11 ]
         experimental: [ false ]
         include:
-          # Only test on macos and windows with a single recent JDK to avoid a
-          # combinatorial explosion of test configurations.
-          - os: macos-latest
-            java: 19
-            experimental: false
-          - os: windows-latest
-            java: 19
-            experimental: false
           - os: ubuntu-latest
             java: 20-ea
             experimental: true
@@ -64,26 +56,3 @@ jobs:
       - name: 'Test'
         shell: bash
         run: mvn test -B
-
-  publish_snapshot:
-    name: 'Publish snapshot'
-    needs: test
-    if: github.event_name == 'push' && github.repository == 'google/google-java-format' && github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Check out repository'
-        uses: actions/checkout@v2
-      - name: 'Set up JDK 17'
-        uses: actions/setup-java@v2
-        with:
-          java-version: 17
-          distribution: 'zulu'
-          cache: 'maven'
-          server-id: sonatype-nexus-snapshots
-          server-username: CI_DEPLOY_USERNAME
-          server-password: CI_DEPLOY_PASSWORD
-      - name: 'Publish'
-        env:
-          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
-          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
-        run: mvn -pl '!eclipse_plugin' source:jar deploy -B -DskipTests=true -Dinvoker.skip=true -Dmaven.javadoc.skip=true
