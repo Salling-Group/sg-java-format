@@ -29,25 +29,25 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest ]
-        java: [ 17, 14, 11 ]
+        java: [ 19, 17, 11 ]
         experimental: [ false ]
         include:
           # Only test on macos and windows with a single recent JDK to avoid a
           # combinatorial explosion of test configurations.
           - os: macos-latest
-            java: 17
+            java: 19
             experimental: false
           - os: windows-latest
-            java: 17
+            java: 19
             experimental: false
           - os: ubuntu-latest
-            java: 18-ea
+            java: 20-ea
             experimental: true
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     steps:
       - name: Cancel previous
-        uses: styfle/cancel-workflow-action@0.8.0
+        uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ github.token }}
       - name: 'Check out repository'
@@ -73,10 +73,10 @@ jobs:
     steps:
       - name: 'Check out repository'
         uses: actions/checkout@v2
-      - name: 'Set up JDK 15'
+      - name: 'Set up JDK 17'
         uses: actions/setup-java@v2
         with:
-          java-version: 15
+          java-version: 17
           distribution: 'zulu'
           cache: 'maven'
           server-id: sonatype-nexus-snapshots
@@ -86,4 +86,4 @@ jobs:
         env:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
-        run: mvn source:jar deploy -B -DskipTests=true -Dinvoker.skip=true -Dmaven.javadoc.skip=true
+        run: mvn -pl '!eclipse_plugin' source:jar deploy -B -DskipTests=true -Dinvoker.skip=true -Dmaven.javadoc.skip=true
