@@ -123,8 +123,8 @@ public final class JavaCommentsHelper implements CommentsHelper {
         result.add(line);
         continue;
       }
-      while (line.length() + column0 > options.maxLineLength()) {
-        int idx = options.maxLineLength() - column0;
+      while (line.length() + column0 > options.style().maxLineLength()) {
+        int idx = options.style().maxLineLength() - column0;
         // only break on whitespace characters, and ignore the leading `// `
         while (idx >= 2 && !CharMatcher.whitespace().matches(line.charAt(idx))) {
           idx--;
