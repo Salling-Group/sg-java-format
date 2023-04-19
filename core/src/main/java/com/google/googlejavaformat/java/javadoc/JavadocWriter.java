@@ -374,7 +374,7 @@ final class JavadocWriter {
     appendSpaces(blockIndent + 1);
     output.append("*");
     appendSpaces(1);
-    remainingOnLine = options.maxLineLength() - blockIndent - 3;
+    remainingOnLine = options.style().maxLineLength() - blockIndent - 3;
     if (autoIndent == AUTO_INDENT) {
       appendSpaces(innerIndent());
       remainingOnLine -= innerIndent();

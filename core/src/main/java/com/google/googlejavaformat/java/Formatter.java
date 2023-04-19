@@ -169,7 +169,7 @@ public final class Formatter {
     builder.drain();
     Doc doc = new DocBuilder().withOps(builder.build()).build();
     doc.computeBreaks(
-        javaOutput.getCommentsHelper(), options.maxLineLength(), new Doc.State(+0, 0));
+        javaOutput.getCommentsHelper(), options.style().maxLineLength(), new Doc.State(+0, 0));
     doc.write(javaOutput);
     javaOutput.flush();
   }
@@ -263,7 +263,9 @@ public final class Formatter {
     // TODO(cushon): this is only safe because the modifier ordering doesn't affect whitespace,
     // and doesn't change the replacements that are output. This is not true in general for
     // 'de-linting' changes (e.g. import ordering).
-    javaInput = ModifierOrderer.reorderModifiers(javaInput, characterRanges);
+    if (options.reorderModifiers()) {
+      javaInput = ModifierOrderer.reorderModifiers(javaInput, characterRanges);
+    }
 
     String lineSeparator = Newlines.guessLineSeparator(input);
     JavaOutput javaOutput =

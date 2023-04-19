@@ -18,7 +18,6 @@ package com.google.googlejavaformat.intellij;
 
 import com.google.googlejavaformat.java.JavaFormatterOptions;
 import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
@@ -30,10 +29,16 @@ import org.jetbrains.annotations.NotNull;
     storages = {@Storage("google-java-format.xml")})
 class GoogleJavaFormatSettings implements PersistentStateComponent<GoogleJavaFormatSettings.State> {
 
+  private final Project project;
+
   private State state = new State();
 
+  GoogleJavaFormatSettings(Project project) {
+    this.project = project;
+  }
+
   static GoogleJavaFormatSettings getInstance(Project project) {
-    return ServiceManager.getService(project, GoogleJavaFormatSettings.class);
+    return project.getService(GoogleJavaFormatSettings.class);
   }
 
   @Nullable
@@ -56,6 +61,9 @@ class GoogleJavaFormatSettings implements PersistentStateComponent<GoogleJavaFor
   }
 
   void setEnabled(EnabledState enabled) {
+    if (enabled.equals(EnabledState.ENABLED)) {
+      JreConfigurationChecker.checkJreConfiguration(project);
+    }
     state.enabled = enabled;
   }
 
