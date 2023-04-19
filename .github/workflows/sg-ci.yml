@@ -1,0 +1,62 @@
+---
+name: CI
+on: push
+concurrency:
+  group: ${{github.ref}}-ci
+  cancel-in-progress: true
+jobs:
+  checkout:
+    runs-on: eco-gcp-dev
+    outputs:
+      git-branch: ${{steps.export-envs.outputs.GIT_BRANCH}}
+      git-repository: ${{steps.export-envs.outputs.GIT_REPOSITORY}}
+      git-tag: ${{steps.export-envs.outputs.GIT_TAG}}
+      job-status: ${{job.status}}
+      os-project: ${{steps.export-envs.outputs.OS_PROJECT}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Archive source files
+        run: tar -czf /tmp/source.tar.gz .
+      - name: Upload source artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: source
+          path: /tmp/source.tar.gz
+
+  test:
+    if: (!contains(github.ref, 'refs/tags'))
+    needs: checkout
+    runs-on: eco-gcp-dev
+    outputs:
+      job-status: ${{job.status}}
+    container:
+      credentials:
+        username: ${{secrets.IMAGE_REGISTRY_USER}}
+        password: ${{secrets.IMAGE_REGISTRY_TOKEN}}
+      image: registry.sallinggroup.io/salling-group/eco-openjdk-builder:v17-5.11
+    steps:
+      - name: Download source artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: source
+      - name: Extract source
+        run: tar -xzf source.tar.gz
+      - name: Run Maven tests
+        uses: SallingGroup-DevOps/gha-maven-test@v1
+
+  deploy-snapshot:
+    needs: test
+    runs-on: eco-gcp-dev
+    container:
+      image: europe-docker.pkg.dev/container-registry-300913/sallinggroup-docker-registry/eco-openjdk-builder:v17-5.11
+    steps:
+      - name: Download source artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: source
+      - name: Extract source
+        run: tar -xzf source.tar.gz
+      - name: Deploy snapshot
+        run: |
+          mvn -B deploy -DskipTests
