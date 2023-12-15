@@ -178,6 +178,9 @@ public class ImportOrderer {
     } else if (style.equals(Style.AOSP)) {
       this.importComparator = AOSP_IMPORT_COMPARATOR;
       this.shouldInsertBlankLineFn = ImportOrderer::shouldInsertBlankLineAosp;
+    } else if (style.equals(Style.SALLING_GROUP)) {
+      this.importComparator = GOOGLE_IMPORT_COMPARATOR;
+      this.shouldInsertBlankLineFn = ImportOrderer::shouldInsertBlankLineGoogle;
     } else {
       throw new IllegalArgumentException("Unsupported code style: " + style);
     }

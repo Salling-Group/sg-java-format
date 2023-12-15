@@ -21,6 +21,7 @@ import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableList;
 import com.google.googlejavaformat.OpsBuilder;
 import com.google.googlejavaformat.OpsBuilder.BlankLineWanted;
+import com.google.googlejavaformat.java.JavaFormatterOptions;
 import com.google.googlejavaformat.java.JavaInputAstVisitor;
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.BindingPatternTree;
@@ -51,8 +52,8 @@ import javax.lang.model.element.Name;
  */
 public class Java17InputAstVisitor extends JavaInputAstVisitor {
 
-  public Java17InputAstVisitor(OpsBuilder builder, int indentMultiplier) {
-    super(builder, indentMultiplier);
+  public Java17InputAstVisitor(OpsBuilder builder, JavaFormatterOptions options) {
+    super(builder, options);
   }
 
   @Override

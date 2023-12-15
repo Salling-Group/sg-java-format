@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
+import com.google.googlejavaformat.java.JavaFormatterOptions.Style;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,7 +43,7 @@ public class CommandLineOptionsParserTest {
     CommandLineOptions options = CommandLineOptionsParser.parse(ImmutableList.of());
     assertThat(options.files()).isEmpty();
     assertThat(options.stdin()).isFalse();
-    assertThat(options.aosp()).isFalse();
+    assertThat(options.style()).isSameInstanceAs(Style.GOOGLE);
     assertThat(options.help()).isFalse();
     assertThat(options.lengths()).isEmpty();
     assertThat(options.lines().asRanges()).isEmpty();
@@ -75,7 +76,16 @@ public class CommandLineOptionsParserTest {
 
   @Test
   public void aosp() {
-    assertThat(CommandLineOptionsParser.parse(Arrays.asList("-aosp")).aosp()).isTrue();
+    assertThat(CommandLineOptionsParser.parse(Arrays.asList("-aosp")).style())
+        .isSameInstanceAs(JavaFormatterOptions.Style.AOSP);
+  }
+
+  @Test
+  public void style() {
+    assertThat(CommandLineOptionsParser.parse(Arrays.asList("-style", "aosp")).style())
+        .isSameInstanceAs(JavaFormatterOptions.Style.AOSP);
+    assertThat(CommandLineOptionsParser.parse(Arrays.asList("-style", "salling-group")).style())
+        .isSameInstanceAs(JavaFormatterOptions.Style.SALLING_GROUP);
   }
 
   @Test

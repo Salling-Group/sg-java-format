@@ -31,21 +31,40 @@ import com.google.errorprone.annotations.Immutable;
 @AutoValue
 public abstract class JavaFormatterOptions {
 
+  static final int DEFAULT_MAX_LINE_LENGTH = 100;
+
   public enum Style {
     /** The default Google Java Style configuration. */
-    GOOGLE(1),
+    GOOGLE(1, DEFAULT_MAX_LINE_LENGTH, false),
 
     /** The AOSP-compliant configuration. */
-    AOSP(2);
+    AOSP(2, DEFAULT_MAX_LINE_LENGTH, false),
+
+    /** The Salling Group configuration. */
+    SALLING_GROUP(2, 80, true);
 
     private final int indentationMultiplier;
 
-    Style(int indentationMultiplier) {
+    private final int maxLineLength;
+
+    private final boolean alwaysStackFieldAnnotations;
+
+    Style(int indentationMultiplier, final int maxLineLength, boolean alwaysStackFieldAnnotations) {
       this.indentationMultiplier = indentationMultiplier;
+      this.maxLineLength = maxLineLength;
+      this.alwaysStackFieldAnnotations = alwaysStackFieldAnnotations;
     }
 
     int indentationMultiplier() {
       return indentationMultiplier;
+    }
+
+    public int maxLineLength() {
+      return maxLineLength;
+    }
+
+    boolean alwaysStackFieldAnnotations() {
+      return alwaysStackFieldAnnotations;
     }
   }
 
@@ -60,6 +79,14 @@ public abstract class JavaFormatterOptions {
 
   /** Returns the code style. */
   public abstract Style style();
+
+  /**
+   * Returns true if field annotations should be unconditionally stacked. By default, annotation
+   * direction is contextual.
+   */
+  public boolean alwaysStackFieldAnnotations() {
+    return style().alwaysStackFieldAnnotations();
+  }
 
   /** Returns the default formatting options. */
   public static JavaFormatterOptions defaultOptions() {

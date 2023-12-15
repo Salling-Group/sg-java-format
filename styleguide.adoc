@@ -1,0 +1,161 @@
+= Salling Group Java style
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+ifndef::env-github[]
+:icons: font
+:source-highlighter: pygments
+endif::[]
+:sectnums:
+:toc:
+:toclevels: 3
+:toc-placement!:
+:xrefstyle: full
+
+:uri-formatter: https://github.com/Salling-Group/sg-java-format
+:uri-google-java: https://google.github.io/styleguide/javaguide.html
+:uri-jdk-choices: https://blog.joda.org/2018/09/time-to-look-beyond-oracles-jdk.html
+:uri-latest-jdk: https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=hotspot
+:uri-oracle-javadoc-guide: https://www.oracle.com/technetwork/java/javase/documentation/index-137868.html
+:uri-previous-jdk: https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot
+
+This is Salling Group's official Java style guide.
+
+toc::[]
+
+== Introduction
+
+The Salling Group Java style is forked from the {uri-google-java}[Google Java
+style]. This document is an extension of the Google Java style that documents
+deviations and additional rules.
+
+To the extent possible, the style guide is enforced by
+{uri-formatter}[`sg-java-format`].
+
+[[_settling_disputes]]
+=== Settling disputes
+
+When this style guide, `sg-java-format`, and users disagree, what happens?
+
+. `sg-java-format` takes precedence, as the enforcer of the style guide. If
+`sg-java-format` violates this style guide, one or the other should be changed
+accordingly.
+
+. This style guide prescribes canonical behavior. Behavior not explicitly
+documented here is inherited from the {uri-google-java}[Google Java style]. If
+the behavior falls under `sg-java-format`{empty}'s purview (e.g. code
+formatting) the formatter must implement the specification as prescribed. For
+other rules the style guide is unconcerned with enforcement.
+
+. If a user disagrees with either the style guide or `sg-java-format` they may
+propose a style change.
+
+If a proposed change to the style guide conflicts with `sg-java-format`, the
+proposal cannot proceed until an accompanying change to `sg-java-format` is
+submitted. Such a proposal can be rejected if the resulting code change is
+deemed too complex.
+
+== Custom rules
+
+This section lists rules that _differ_ from, or do not exist in, the Google
+Java style. Refer to _<<_settling_disputes,Section 1.1, "`Settling
+disputes`">>_ for precedence rules.
+
+=== Source file structure
+
+==== No copyright header
+
+Internal code should not have copyright headers. Copyright is implicitly
+all-rights-reserved. These headers are purely noise and maintaining them
+busywork.
+
+Open source code _may_ have copyright headers but we strongly advise leaving
+them out. Instead, the (mandatory) project level license implicitly applies to
+all source files not explicitly exempted.
+
+[NOTE]
+====
+Historically, a major motivating factor for copyright headers is that blindly
+copying individual source files will automatically preserve the original
+copyright. In reality, vanishingly little can be done to prevent or correct
+such misbehavior.
+====
+
+=== Formatting
+
+==== Block indentation: +4 spaces
+
+Each time a new block or block-like construct is opened, the indent increases
+by four spaces. When the block ends, the indent returns to the previous indent
+level.
+
+The choice of four spaces is a wildly popular one both in Java projects and in
+other ecosystems so users are likely to find it familiar and comfortable. It
+produces visually distinct indentation levels and scales pragmatically in the
+number of people.
+
+[NOTE]
+====
+The tab character is inappropriate for indentation:
+
+* The traditional argument for tabs is that they allow users to control
+indentation column width. This agency is incompatible with a fixed column limit
+and the argument is therefore void.
+
+* Tab characters are usually rendered indistinguishably from space characters
+by default, frequently leading to mixed whitespace indentation.
+
+* Browsers have considerable difficulty producing and rendering tab characters
+correctly.
+====
+
+==== Column limit: 80
+
+Java code has a column limit of 80 characters.
+
+[NOTE]
+====
+It has become popular to think that especially Java code cannot be written
+cleanly with a column limit of 80, or that, with 24" monitors, we should not
+have to adhere to such "`archaic restrictions`". In reality it is perfectly
+easy to write clean Java code while adhering to a column limit of 80, and such
+a limit is not archaic but rather pragmatic with respect to reading and version
+control: shorter lines are easier to skim and less likely to change. OpenJDK
+itself is a good example of this limit: as of `jdk12+19` 97% of Java lines are
+at most 80 columns.
+====
+
+[NOTE]
+====
+A more ideal limit would be "`80-ish`" but that's not enforceable with tooling,
+and exceptions scale much worse than absolutes.
+====
+
+==== Field annotations: stacked
+
+Annotations on fields are always stacked on top of the fields, no matter how
+many there are:
+
+[source,java]
+----
+@Annotation
+private final Foo foo;
+----
+
+=== Naming
+
+==== Package names
+
+Package names are conventionally singular. This looks better in import
+statements.
+
+=== Javadoc
+
+Study Oracle's official {uri-oracle-javadoc-guide}[How to Write Doc Comments
+for the Javadoc Tool] guide. It's old so it sports some dated advice, and
+written for a high-profile library so it has very high requirements, but it
+effectively established fairly good conventions.

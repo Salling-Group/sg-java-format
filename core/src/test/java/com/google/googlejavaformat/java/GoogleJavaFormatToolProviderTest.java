@@ -52,6 +52,6 @@ public class GoogleJavaFormatToolProviderTest {
 
     // Check that doc links are included.
     assertThat(usage).containsMatch("http.*/google-java-format");
-    assertThat(usage).contains("Usage: google-java-format");
+    assertThat(usage).contains("Usage: sg-java-format");
   }
 }

@@ -300,6 +300,7 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
 
   protected static final Indent.Const ZERO = Indent.Const.ZERO;
   protected final int indentMultiplier;
+  protected final JavaFormatterOptions options;
   protected final Indent.Const minusTwo;
   protected final Indent.Const minusFour;
   protected final Indent.Const plusTwo;
@@ -333,8 +334,10 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
    *
    * @param builder the {@link OpsBuilder}
    */
-  public JavaInputAstVisitor(OpsBuilder builder, int indentMultiplier) {
+  public JavaInputAstVisitor(OpsBuilder builder, JavaFormatterOptions options) {
     this.builder = builder;
+    this.options = options;
+    int indentMultiplier = options.indentationMultiplier();
     this.indentMultiplier = indentMultiplier;
     minusTwo = Indent.Const.make(-2, indentMultiplier);
     minusFour = Indent.Const.make(-4, indentMultiplier);
@@ -3881,7 +3884,11 @@ public class JavaInputAstVisitor extends TreePathScanner<Void, Void> {
    * Should a field with a set of modifiers be declared with horizontal annotations? This is
    * currently true if all annotations are parameterless annotations.
    */
-  private static Direction fieldAnnotationDirection(ModifiersTree modifiers) {
+  private Direction fieldAnnotationDirection(ModifiersTree modifiers) {
+    if (options.alwaysStackFieldAnnotations()) {
+      return Direction.VERTICAL;
+    }
+
     for (AnnotationTree annotation : modifiers.getAnnotations()) {
       if (!annotation.getArguments().isEmpty()) {
         return Direction.VERTICAL;

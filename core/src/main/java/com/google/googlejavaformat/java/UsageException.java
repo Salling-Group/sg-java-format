@@ -24,12 +24,13 @@ final class UsageException extends Exception {
   private static final Joiner NEWLINE_JOINER = Joiner.on(System.lineSeparator());
 
   private static final String[] DOCS_LINK = {
+    "https://github.com/Salling-Group/sg-java-format",
     "https://github.com/google/google-java-format",
   };
 
   private static final String[] USAGE = {
     "",
-    "Usage: google-java-format [options] file(s)",
+    "Usage: sg-java-format [options] file(s)",
     "",
     "Options:",
     "  -i, -r, -replace, --replace",
@@ -40,6 +41,8 @@ final class UsageException extends Exception {
     "    File name to use for diagnostics when formatting standard input (default is <stdin>).",
     "  --aosp, -aosp, -a",
     "    Use AOSP style instead of Google Style (4-space indentation).",
+    "  --style, -style, -s",
+    "    Use the named style; one of: aosp, google, salling-group.",
     "  --fix-imports-only",
     "    Fix import order and remove any unused imports, but do no other formatting.",
     "  --skip-sorting-imports",

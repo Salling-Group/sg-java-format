@@ -44,7 +44,7 @@ public final class JavaCommentsHelper implements CommentsHelper {
     }
     String text = tok.getOriginalText();
     if (tok.isJavadocComment() && options.formatJavadoc()) {
-      text = JavadocFormatter.formatJavadoc(text, column0);
+      text = JavadocFormatter.formatJavadoc(text, column0, options);
     }
     List<String> lines = new ArrayList<>();
     Iterator<String> it = Newlines.lineIterator(text);
@@ -123,8 +123,8 @@ public final class JavaCommentsHelper implements CommentsHelper {
         result.add(line);
         continue;
       }
-      while (line.length() + column0 > Formatter.MAX_LINE_LENGTH) {
-        int idx = Formatter.MAX_LINE_LENGTH - column0;
+      while (line.length() + column0 > options.style().maxLineLength()) {
+        int idx = options.style().maxLineLength() - column0;
         // only break on whitespace characters, and ignore the leading `// `
         while (idx >= 2 && !CharMatcher.whitespace().matches(line.charAt(idx))) {
           idx--;

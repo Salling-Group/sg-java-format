@@ -25,9 +25,11 @@
   <version>1.19.1</version>
   </parent>
 
-  <artifactId>google-java-format</artifactId>
+  <groupId>com.sallinggroup.javaformat</groupId>
+  <artifactId>sg-java-format</artifactId>
+  <version>2-SNAPSHOT</version>
 
-  <name>Google Java Format</name>
+  <name>SG Java Format</name>
 
   <description>
     A Java source code formatter that follows Google Java Style.
@@ -187,7 +189,11 @@
           <replacements>
             <replacement>
               <token>%VERSION%</token>
-              <value>${project.version}</value>
+              <value>${project.parent.version}</value>
+            </replacement>
+            <replacement>
+              <token>%GOOGLE_VERSION%</token>
+              <value>${project.parent.version}</value>
             </replacement>
           </replacements>
         </configuration>
@@ -231,7 +237,7 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
+            <groupId><![CDATA[org.apache.maven.plugins]]></groupId>
             <artifactId>maven-compiler-plugin</artifactId>
             <configuration>
               <excludes>
