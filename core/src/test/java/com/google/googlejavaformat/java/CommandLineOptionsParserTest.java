@@ -43,7 +43,7 @@ public class CommandLineOptionsParserTest {
     CommandLineOptions options = CommandLineOptionsParser.parse(ImmutableList.of());
     assertThat(options.files()).isEmpty();
     assertThat(options.stdin()).isFalse();
-    assertThat(options.style()).isSameAs(Style.GOOGLE);
+    assertThat(options.style()).isEqualTo(Style.GOOGLE);
     assertThat(options.help()).isFalse();
     assertThat(options.lengths()).isEmpty();
     assertThat(options.lines().asRanges()).isEmpty();
@@ -77,15 +77,15 @@ public class CommandLineOptionsParserTest {
   @Test
   public void aosp() {
     assertThat(CommandLineOptionsParser.parse(Arrays.asList("-aosp")).style())
-        .isSameAs(JavaFormatterOptions.Style.AOSP);
+        .isEqualTo(JavaFormatterOptions.Style.AOSP);
   }
 
   @Test
   public void style() {
     assertThat(CommandLineOptionsParser.parse(Arrays.asList("-style", "aosp")).style())
-        .isSameAs(JavaFormatterOptions.Style.AOSP);
+        .isEqualTo(JavaFormatterOptions.Style.AOSP);
     assertThat(CommandLineOptionsParser.parse(Arrays.asList("-style", "salling-group")).style())
-        .isSameAs(JavaFormatterOptions.Style.SALLING_GROUP);
+        .isEqualTo(JavaFormatterOptions.Style.SALLING_GROUP);
   }
 
   @Test

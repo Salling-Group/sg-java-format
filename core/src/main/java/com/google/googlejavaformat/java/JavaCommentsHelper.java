@@ -110,6 +110,7 @@ public final class JavaCommentsHelper implements CommentsHelper {
       Pattern.compile("^(//+)(?!noinspection|\\$NON-NLS-\\d+\\$)[^\\s/]");
 
   private List<String> wrapLineComments(List<String> lines, int column0) {
+    final var maxLineLength = options.style().maxLineLength();
     List<String> result = new ArrayList<>();
     for (String line : lines) {
       // Add missing leading spaces to line comments: `//foo` -> `// foo`.
@@ -123,8 +124,8 @@ public final class JavaCommentsHelper implements CommentsHelper {
         result.add(line);
         continue;
       }
-      while (line.length() + column0 > Formatter.MAX_LINE_LENGTH) {
-        int idx = Formatter.MAX_LINE_LENGTH - column0;
+      while (line.length() + column0 > maxLineLength) {
+        int idx = maxLineLength - column0;
         // only break on whitespace characters, and ignore the leading `// `
         while (idx >= 2 && !CharMatcher.whitespace().matches(line.charAt(idx))) {
           idx--;

@@ -88,7 +88,7 @@ public final class Formatter {
 
   static final Range<Integer> EMPTY_RANGE = Range.closedOpen(-1, -1);
 
-  private final JavaFormatterOptions options;
+  public final JavaFormatterOptions options;
 
   /** A new Formatter instance with default options. */
   public Formatter() {
@@ -159,13 +159,13 @@ public final class Formatter {
           createVisitor(
               "com.google.googlejavaformat.java.java17.Java17InputAstVisitor", builder, options);
     } else {
-      visitor = new JavaInputAstVisitor(builder, options.indentationMultiplier());
+      visitor = new JavaInputAstVisitor(builder, options);
     }
     visitor.scan(unit, null);
     builder.sync(javaInput.getText().length());
     builder.drain();
     Doc doc = new DocBuilder().withOps(builder.build()).build();
-    doc.computeBreaks(javaOutput.getCommentsHelper(), MAX_LINE_LENGTH, new Doc.State(+0, 0));
+    doc.computeBreaks(javaOutput.getCommentsHelper(), options.style().maxLineLength(), new Doc.State(+0, 0));
     doc.write(javaOutput);
     javaOutput.flush();
   }

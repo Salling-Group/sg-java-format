@@ -21,7 +21,6 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 
 import com.google.common.collect.ImmutableList;
-import com.google.googlejavaformat.java.JavaFormatterOptions;
 import com.google.googlejavaformat.java.javadoc.JavadocLexer.LexException;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -43,19 +42,19 @@ public final class JavadocFormatter {
    * Formats the given Javadoc comment, which must start with ∕✱✱ and end with ✱∕. The output will
    * start and end with the same characters.
    */
-  public static String formatJavadoc(String input, int blockIndent, JavaFormatterOptions options) {
+  public static String formatJavadoc(String input, int blockIndent) {
     ImmutableList<Token> tokens;
     try {
       tokens = lex(input);
     } catch (LexException e) {
       return input;
     }
-    String result = render(tokens, blockIndent, options);
+    String result = render(tokens, blockIndent);
     return makeSingleLineIfPossible(blockIndent, result);
   }
 
-  private static String render(List<Token> input, int blockIndent, JavaFormatterOptions options) {
-    JavadocWriter output = new JavadocWriter(blockIndent, options);
+  private static String render(List<Token> input, int blockIndent) {
+    JavadocWriter output = new JavadocWriter(blockIndent);
     for (Token token : input) {
       switch (token.getType()) {
         case BEGIN_JAVADOC:

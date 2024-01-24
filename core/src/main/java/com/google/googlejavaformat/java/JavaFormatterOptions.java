@@ -58,7 +58,7 @@ public abstract class JavaFormatterOptions {
       return indentationMultiplier;
     }
 
-    int maxLineLength() {
+    public int maxLineLength() {
       return maxLineLength;
     }
 

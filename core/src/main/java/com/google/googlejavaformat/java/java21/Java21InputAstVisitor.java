@@ -15,6 +15,7 @@
 package com.google.googlejavaformat.java.java21;
 
 import com.google.googlejavaformat.OpsBuilder;
+import com.google.googlejavaformat.java.JavaFormatterOptions;
 import com.google.googlejavaformat.java.java17.Java17InputAstVisitor;
 import com.sun.source.tree.CaseTree;
 import com.sun.source.tree.ConstantCaseLabelTree;
@@ -32,8 +33,8 @@ import javax.lang.model.element.Name;
  */
 public class Java21InputAstVisitor extends Java17InputAstVisitor {
 
-  public Java21InputAstVisitor(OpsBuilder builder, int indentMultiplier) {
-    super(builder, indentMultiplier);
+  public Java21InputAstVisitor(OpsBuilder builder, JavaFormatterOptions options) {
+    super(builder, options);
   }
 
   @Override
